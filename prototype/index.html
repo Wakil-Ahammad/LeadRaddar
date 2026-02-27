@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadRadar — Web Dev Client Opportunities Finder</title>
+    <meta name="description" content="Find founders, CEOs, and entrepreneurs publicly posting about web development needs. Curated leads from Twitter, LinkedIn, Reddit, Indie Hackers, and more.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-satellite-dish"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>LeadRadar</h1>
+                    <span class="logo-tagline">Web Dev Client Opportunities</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="last-updated">
+                    <i class="fas fa-clock"></i>
+                    <span>Updated: Feb 27, 2026</span>
+                </div>
+                <button class="btn-refresh" id="refreshBtn" title="Refresh data">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stats-inner">
+            <div class="stat-card">
+                <div class="stat-icon" style="--accent: #a78bfa;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="totalLeads">0</span>
+                    <span class="stat-label">Total Leads</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="--accent: #38bdf8;">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="platformCount">0</span>
+                    <span class="stat-label">Platforms</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="--accent: #34d399;">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="freshLeads">0</span>
+                    <span class="stat-label">Fresh (7 days)</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="--accent: #fb923c;">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="verifiedLeads">0</span>
+                    <span class="stat-label">With Website</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Controls Bar -->
+    <section class="controls-bar">
+        <div class="controls-inner">
+            <!-- Search -->
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search leads by name, company, project type..." autocomplete="off">
+                <button class="search-clear" id="searchClear" title="Clear search">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Platform Filters -->
+            <div class="filter-group">
+                <span class="filter-label">Platform:</span>
+                <div class="filter-chips" id="platformFilters">
+                    <button class="chip active" data-platform="all">
+                        <i class="fas fa-layer-group"></i> All
+                    </button>
+                    <button class="chip" data-platform="reddit">
+                        <i class="fab fa-reddit"></i> Reddit
+                    </button>
+                    <button class="chip" data-platform="twitter">
+                        <i class="fab fa-x-twitter"></i> Twitter/X
+                    </button>
+                    <button class="chip" data-platform="linkedin">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </button>
+                    <button class="chip" data-platform="indiehackers">
+                        <i class="fas fa-rocket"></i> Indie Hackers
+                    </button>
+                    <button class="chip" data-platform="producthunt">
+                        <i class="fab fa-product-hunt"></i> Product Hunt
+                    </button>
+                    <button class="chip" data-platform="github">
+                        <i class="fab fa-github"></i> GitHub
+                    </button>
+                    <button class="chip" data-platform="medium">
+                        <i class="fab fa-medium"></i> Medium
+                    </button>
+                    <button class="chip" data-platform="discord">
+                        <i class="fab fa-discord"></i> Discord
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sort & View -->
+            <div class="sort-view">
+                <div class="sort-wrapper">
+                    <label for="sortSelect">Sort:</label>
+                    <select id="sortSelect">
+                        <option value="date-desc">Newest First</option>
+                        <option value="date-asc">Oldest First</option>
+                        <option value="name-asc">Name A-Z</option>
+                        <option value="name-desc">Name Z-A</option>
+                    </select>
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid" title="Grid view">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-btn" data-view="list" title="List view">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="leads-container" id="leadsContainer">
+            <!-- Cards rendered by JS -->
+        </div>
+        <div class="no-results" id="noResults" style="display: none;">
+            <div class="no-results-icon">
+                <i class="fas fa-satellite"></i>
+            </div>
+            <h2>No leads found</h2>
+            <p>Try adjusting your search or filters to find opportunities</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <p>&copy; 2026 LeadRadar — Scan public platforms for web development client opportunities.</p>
+            <p class="footer-disclaimer">
+                <i class="fas fa-info-circle"></i>
+                All leads are sourced from publicly available posts. Excluded: Freelancer.com, Upwork, Fiverr, PeoplePerHour, 99designs, Guru, Toptal.
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+spring:
+  # ── PostgreSQL (local Docker) ──
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5434}/${DB_NAME:serviceintent_radar}
+    username: ${DB_USER:radar}
+    password: ${DB_PASSWORD:radar_dev_2026}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 20000
+
+  # ── Redis (local Docker) ──
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+
+  # ── JPA dev overrides ──
+  jpa:
+    show-sql: true
+
+  # ── Mail (dev: console logger) ──
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+# ── Logging ──
+logging:
+  level:
+    com.leadradar: DEBUG
+    org.hibernate.SQL: DEBUG

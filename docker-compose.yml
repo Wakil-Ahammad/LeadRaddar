@@ -1,0 +1,96 @@
+version: "3.9"
+
+# ══════════════════════════════════════════════════════
+# LeadRadar — Docker Compose
+# Usage:
+#   docker-compose up -d              → start infra
+#   docker-compose up -d --build      → rebuild & start all
+#   docker-compose down -v            → stop & remove volumes
+# ══════════════════════════════════════════════════════
+
+services:
+  # ── PostgreSQL 16 ──
+  postgres:
+    image: postgres:16-alpine
+    container_name: lr-postgres
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-5434}:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME:-serviceintent_radar}
+      POSTGRES_USER: ${DB_USER:-radar}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-radar_dev_2026}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-radar} -d ${DB_NAME:-serviceintent_radar}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis 7 ──
+  redis:
+    image: redis:7-alpine
+    container_name: lr-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6380}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ── Spring Boot Backend ──
+  # (Uncomment after backend Dockerfile is ready)
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: sir-backend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${SERVER_PORT:-8080}:8080"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: dev
+  #     DB_HOST: postgres
+  #     DB_PORT: 5432
+  #     DB_NAME: ${DB_NAME:-serviceintent_radar}
+  #     DB_USER: ${DB_USER:-radar}
+  #     DB_PASSWORD: ${DB_PASSWORD:-radar_dev_2026}
+  #     REDIS_HOST: redis
+  #     REDIS_PORT: 6379
+  #     JWT_SECRET: ${JWT_SECRET:-}
+  #     REDDIT_CLIENT_ID: ${REDDIT_CLIENT_ID:-}
+  #     REDDIT_CLIENT_SECRET: ${REDDIT_CLIENT_SECRET:-}
+  #     OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  #     STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+  #     STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+  #   env_file:
+  #     - .env
+
+  # ── Angular Frontend (Nginx) ──
+  # (Uncomment after frontend Dockerfile is ready)
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: sir-frontend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "4200:80"
+  #   depends_on:
+  #     - backend
+
+volumes:
+  pg_data:
+    driver: local
+  redis_data:
+    driver: local
