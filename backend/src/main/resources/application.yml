@@ -39,7 +39,7 @@ server:
 # ── JWT ──
 app:
   jwt:
-    secret: ${JWT_SECRET:defaultDevSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm!!}
+    secret: ${JWT_SECRET:defaultDevSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
   # ── OpenAI ──
