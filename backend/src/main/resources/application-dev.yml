@@ -32,6 +32,11 @@ spring:
           starttls:
             enable: false
 
+management:
+  health:
+    mail:
+      enabled: false
+
 # ── Logging ──
 logging:
   level:
